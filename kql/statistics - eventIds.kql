@@ -1,0 +1,5 @@
+traces
+| where timestamp > ago(10d)
+| extend eventId = tostring(customDimensions.eventId)
+| distinct eventId
+| order by eventId asc

@@ -1,0 +1,30 @@
+traces
+| where customDimensions.eventId == 'RT0005'
+| extend tenantId = tostring (customDimensions.aadTenantId)
+| summarize arg_max(timestamp, *) by timestamp
+| project 
+    eventDate = format_datetime(timestamp, 'yyyy-MM-dd')    
+    , object = strcat ('[', tostring(customDimensions.alObjectType), '::', tostring(customDimensions.alObjectName), ']')
+    , executionTime = totimespan (customDimensions.executionTime) / 1ms
+    , tenantId
+| summarize
+    sumExecutionTime = sum (executionTime),
+    minExecutionTime=min (executionTime),
+    avgExecutionTime=avg (executionTime),
+    maxExecutionTime=max (executionTime),   
+    executionCount=count(object)
+    by eventDate, object, tenantId
+| order by eventDate asc
+| project
+    eventDate,
+    sumExecutionTime,
+    object = strcat (object, '  [min=', minExecutionTime, ', max=', maxExecutionTime, ', count=', executionCount, ']'),
+    tenantId
+| render columnchart
+    with (
+    xcolumn = eventDate,
+    xtitle="Event Date",
+    title='Long running queries by tenant',
+    ycolumns=sumExecutionTime,
+    ytitle="Total Time (ms)",
+    legend=hidden)

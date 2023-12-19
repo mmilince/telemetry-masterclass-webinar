@@ -1,0 +1,21 @@
+traces
+| where timestamp > ago(10d)
+| where customDimensions has 'FeatureTelemetry'
+| where customDimensions has 'Uptake'
+| where customDimensions.alCategory == 'FeatureTelemetry'
+| where customDimensions.alSubCategory == 'Uptake'
+| project timestamp
+, aadTenantId = customDimensions.aadTenantId
+, environmentName = customDimensions.environmentName
+, environmentType = customDimensions.environmentType
+, companyName = customDimensions.companyName
+, clientType = customDimensions.alClientType
+, eventId = customDimensions.eventId
+, featureName = tostring(customDimensions.alFeatureName)
+, eventName = tostring(customDimensions.alEventName)
+, category = tostring(customDimensions.alCategory)
+, appName = customDimensions.alCallerAppName
+, appId = customDimensions.alCallerAppId
+, appPublisher = customDimensions.alCallerPublisher
+, appVersion = customDimensions.alCallerAppVersion
+| summarize executionCount=count() by featureName, eventName

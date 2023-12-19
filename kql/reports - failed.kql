@@ -1,0 +1,20 @@
+traces
+| where customDimensions.eventId == 'RT0006'
+| where severityLevel == 3
+| extend alObjectId_ = toint(customDimensions.alObjectId)
+| extend alObjectName_ = tostring(customDimensions.alObjectName)
+| extend AadTenantId_ = tostring(customDimensions.AadTenantId)
+| extend companyName_ = tostring(customDimensions.companyName)
+| extend extensionName_ = tostring(customDimensions.extensionName)
+| extend sqlExecutes_ = tostring(customDimensions.sqlExecutes)
+| extend sqlRowsRead_ = tostring(customDimensions.sqlRowsRead)
+| extend totalTime_ = tostring(customDimensions.totalTime)
+| extend numberOfRows_ = tostring(customDimensions.numberOfRows)
+| extend clientType_ = tostring(customDimensions.clientType)
+| extend result_ = tostring(customDimensions.result)
+| summarize 
+    executionCount_ = count() 
+    by alObjectId_, alObjectName_, extensionName_, clientType_, result_
+| order by executionCount_ desc 
+
+

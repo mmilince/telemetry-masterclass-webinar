@@ -1,0 +1,20 @@
+traces
+| where customDimensions.eventId == 'RT0006'
+| where severityLevel == 1
+| extend alObjectId_ = toint(customDimensions.alObjectId)
+| extend alObjectName_ = tostring(customDimensions.alObjectName)
+| extend companyName_ = tostring(customDimensions.companyName)
+| extend extensionName_ = tostring(customDimensions.extensionName)
+| extend sqlExecutes_ = toint(customDimensions.sqlExecutes)
+| extend sqlRowsRead_ = toint(customDimensions.sqlRowsRead)
+| extend totalTime_ = totime(customDimensions.totalTime)
+| extend clientType_ = tostring(customDimensions.clientType)
+| summarize 
+    executionCount_ = count()
+    , sqlExecutesSum_ = sum(sqlExecutes_) 
+    , sqlRowsReadSum_ = sum(sqlRowsRead_)
+    , totalTimeSum_ = sum(totalTime_)
+    by alObjectId_, alObjectName_, extensionName_, clientType_, severityLevel
+| order by sqlExecutesSum_ desc 
+
+
