@@ -1,0 +1,4 @@
+pageViews
+| where user_Id == 'user id from BC User Card' and customDimensions.alObjectName == 'Item Ledger Entries'
+| order by timestamp desc 
+|take 100
