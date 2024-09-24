@@ -1,0 +1,4 @@
+traces
+| where customDimensions.eventId == 'RT0004' and user_Id == 'user id from Dynamics 365 Business Central User Card'
+|order by timestamp desc 
+| take 100

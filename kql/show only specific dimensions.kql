@@ -1,0 +1,4 @@
+traces
+|where customDimensions.eventId == 'RT0004' and client_Type != ""
+| extend eventId = tostring(customDimensions["eventId"]), client = tostring(customDimensions["clientType"])
+|project  eventId, client
