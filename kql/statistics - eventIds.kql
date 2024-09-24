@@ -1,5 +1,10 @@
 traces
-| where timestamp > ago(10d)
+| where timestamp > ago(60d)
 | extend eventId = tostring(customDimensions.eventId)
 | distinct eventId
 | order by eventId asc
+
+traces
+| where timestamp > ago(60d)
+| extend eventId = tostring(customDimensions.eventId)
+| summarize  occured = count(eventId) by eventId

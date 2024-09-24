@@ -1,0 +1,15 @@
+source
+| where tostring(Properties.eventId) <> "RT0020" //Authentication with web service key succeeded
+| where tostring(Properties.eventId) <> "RT0004"  //Authorization Succeeded
+| where (
+    tostring(Properties.eventId) <> "RT0008" //Web service called
+    or 
+    tostring(Message) startswith "Web service called (SOAP)"
+    )
+| where ( 
+    tostring(Properties.eventId) <> 'RT0030' // RT0030 - Error dialogs with empty text
+    or 
+    tostring(Message) !startswith "Error dialog shown:" 
+    or 
+    Properties has "alErrorMessage"
+    ) 

@@ -1,4 +1,5 @@
 traces
+| where timestamp > ago(60d)
 | where customDimensions.eventId == 'RT0006'
 | where severityLevel == 3
 | extend alObjectId_ = toint(customDimensions.alObjectId)

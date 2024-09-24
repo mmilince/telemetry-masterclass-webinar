@@ -1,10 +1,19 @@
 traces
+| where timestamp > ago(15d)
 | where customDimensions.eventId == 'RT0005'
 | extend tenantId = tostring (customDimensions.aadTenantId)
+| extend st = strcat(customDimensions.alStackTrace)
+| extend f1 = indexof(st, "CallStack")
+| extend mn = substring(st, f1 + 10, f1 - 10)
+| extend fn = substring(mn, indexof(mn, ').') + 2)
+| extend ln = indexof(fn, " line ")
+| extend fname = substring(fn, 0, ln)
+| extend lname = substring(fn, ln, 8)
+| where fname != ''
 | summarize arg_max(timestamp, *) by timestamp
 | project 
     eventDate = format_datetime(timestamp, 'yyyy-MM-dd')    
-    , object = strcat ('[', tostring(customDimensions.alObjectType), '::', tostring(customDimensions.alObjectName), ']')
+    , object = strcat ('[', tostring(customDimensions.alObjectType), '::', tostring(customDimensions.alObjectName), ']', fname)
     , executionTime = totimespan (customDimensions.executionTime) / 1ms
     , tenantId
 | summarize
